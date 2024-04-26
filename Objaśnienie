@@ -1,0 +1,35 @@
+Kod implementuje algorytm Bootha do mnożenia dwóch liczb binarnych.
+Jest to sposób wykorzystywany do mnożenia dwóch liczb całkowitych (zwłaszcza w formacie uzupełnienia do dwóch),
+który pozwala na efektywne wykonanie tej operacji w układach cyfrowych, takich jak procesory.
+Oto dokładniejszy opis działania poszczególnych funkcji i głównej logiki programu:
+
+### Funkcje pomocnicze
+
+1. **dodaj(int a[], int x[], int q)**:
+   - Funkcja ta dodaje dwie liczby binarne (reprezentowane jako tablice bitów `a` i `x`) i zapisuje wynik w
+   tablicy `a`. Dodawanie jest realizowane bit po bicie z uwzględnieniem przeniesienia (carry).
+   Jeśli suma bitów przekracza 1, realizowane jest modulo 2, co odpowiada operacji logicznego XOR.
+
+2. **przesunWPrawo(int ac[], int qr[], int &qn, int q)**:
+   - Funkcja ta wykonuje arytmetyczne przesunięcie w prawo na dwóch tablicach bitów:
+   `ac` (accumulator) i `qr` (część mnożnika).
+   Przesunięcie obejmuje przesunięcie bitów każdej z tablic oraz przekazanie najstarszego bitu z `ac` na
+   najmłodszy bit w `qr`. To symuluje przesunięcie łącznego 64-bitowego rejestru w prawo.
+
+3. **wyswietlWynik(int ac[], int qr[], int qrn)**:
+   - Wyświetla wynik mnożenia. Wynik jest podzielony na dwie części: `ac` i `qr`,
+   które razem tworzą wynik mnożenia.
+
+4. **uzupelnienieDoDwoch(int a[], int n)**:
+   - Zamienia liczbę binarną na jej dopełnienie do dwóch, co jest równoważne z zanegowaniem wszystkich
+   bitów i dodaniem 1. Jest to używane do przygotowania ujemnego mnożnika.
+
+### Główna logika algorytmu (funkcja main)
+
+- Pobierane są dane wejściowe: mnożna i mnożnik, które mogą być liczbami ujemnymi (wtedy podawane są w formacie uzupełnienia do dwóch).
+- W algorytmie Bootha wykorzystuje się licznik cykli (`sc`), który inicjalizowany jest na początku do liczby bitów mnożnika.
+- W każdym cyklu algorytm sprawdza ostatni bit mnożnika (`qr[0]`) i bit pomocniczy (`qn`). W zależności od ich wartości:
+  - Jeśli ostatnie bity (`qn` + `qr[0]`) wynoszą 1, to w zależności od wartości zmiennej pomocniczej `temp` dodawany jest mnożnik lub mnożna do akumulatora `ac`.
+  - Następnie wykonywane jest przesunięcie w prawo.
+- Algorytm kontynuuje działanie, aż wszystkie cykle zostaną wykonane.
+
