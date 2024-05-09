@@ -1,88 +1,89 @@
-#include<iostream>
+#include <iostream>
+#include <vector>
 using namespace std;
 
-// Funkcja dodajaca dwie liczby binarne (w postaci tablic) i przechowujaca wynik w pierwszej tablicy
-void dodaj(int a[], int x[], int q) {
-    int i, c = 0; // 'c' jest zmienną przechowującą nadmiar (carry)
-    for (i = 0; i < q; i++) {
-        a[i] = a[i] + x[i] + c; // dodawanie odpowiadających bitów wraz z przeniesieniem
-        if (a[i] > 1) {
-            a[i] = a[i] % 2; // jeśli suma bitów wynosi 2 lub więcej, ustaw odpowiedni bit na 0 lub 1
-            c = 1; // ustawienie nadmiaru na 1
-        } else {
-            c = 0; // brak nadmiaru
-        }
+// Dodaje dwie binarne liczby reprezentowane przez tablice bitów
+void dodaj(vector<int> &a, const vector<int> &b) {
+    int carry = 0;
+    for (size_t i = 0; i < a.size(); i++) {
+        int sum = a[i] + b[i] + carry;
+        a[i] = sum % 2;
+        carry = sum / 2;
     }
 }
 
-// Funkcja wykonująca przesunięcie arytmetyczne w prawo (ASHR) dla dwóch liczb binarnych (AC i QR)
-void przesunWPrawo(int ac[], int qr[], int &qn, int q) {
-    int temp, i;
-    temp = ac[0]; // przechowanie najstarszego bitu
-    qn = qr[0]; // przypisanie nowego bitu najmłodszego w QR
-    for (i = 0; i < q - 1; i++) {
-        ac[i] = ac[i + 1]; // przesunięcie bitów AC
-        qr[i] = qr[i + 1]; // przesunięcie bitów QR
+// Przeprowadza dopełnienie do dwóch
+void uzupelnienieDoDwoch(vector<int> &num) {
+    vector<int> jeden(num.size(), 0);
+    jeden[0] = 1;
+    for (int &bit : num) {
+        bit = (bit + 1) % 2;
     }
-    qr[q - 1] = temp; // przypisanie starego najstarszego bitu AC do najmłodszego bitu QR
+    dodaj(num, jeden);
 }
 
-// Funkcja wyświetlająca wynik mnożenia
-void wyswietlWynik(int ac[], int qr[], int qrn) {
-    int i;
-    for (i = qrn - 1; i >= 0; i--)
-        cout << ac[i]; // wyświetlenie bitów AC od najstarszego do najmłodszego
+// Przesuwa w prawo, obsługując Booth-Radix 4
+void przesunWPrawo(vector<int> &ac, vector<int> &qr, int &qn) {
+    int temp = ac[0];
+    qn = qr[0];
+    for (size_t i = 0; i < ac.size() - 1; i++) {
+        ac[i] = ac[i + 1];
+        qr[i] = qr[i + 1];
+    }
+    qr[qr.size() - 1] = temp;
+}
+
+// Wyświetla wynik w formie binarnej
+void wyswietlWynik(const vector<int> &ac, const vector<int> &qr) {
+    for (auto it = ac.rbegin(); it != ac.rend(); ++it)
+        cout << *it;
     cout << " ";
-    for (i = qrn - 1; i >= 0; i--)
-        cout << qr[i]; // wyświetlenie bitów QR od najstarszego do najmłodszego
+    for (auto it = qr.rbegin(); it != qr.rend(); ++it)
+        cout << *it;
     cout << endl;
 }
 
-// Funkcja wykonująca uzupełnienie do 2 dla liczby binarnej (zmiana na jej dopełnienie do jedynki)
-void uzupelnienieDoDwoch(int a[], int n) {
-    int i;
-    int x[8] = { 0 }; // pomocnicza tablica do dodania 1
-    x[0] = 1; // dodanie 1 do najmłodszego bitu
-    for (i = 0; i < n; i++) {
-        a[i] = (a[i] + 1) % 2; // negacja każdego bitu
-    }
-    dodaj(a, x, n); // dodanie 1 do wyniku negacji
-}
+// Wykonuje mnożenie w algorytmie Booth-Radix 4
+int main() {
+    int brn, qrn;
+    vector<int> br, qr, ac;
+    int qn = 0, licznik;
 
-int main(int argc, char **argv) {
-    int mt[10], br[10], qr[10], sc, ac[10] = { 0 }; // deklaracje tablic dla mnożenia i pomocniczych zmiennych
-    int brn, qrn, i, qn, temp;
     cout << "\n--Podaj mnoznik i mnoznik w postaci dwojkowej uzupelnionej do 2 jesli jest ujemny--";
     cout << "\n Liczba bitow mnoznika=";
     cin >> brn;
+    br.resize(brn);
+    ac.resize(brn, 0);
+
     cout << "\nMnoznik=";
-    for (i = brn - 1; i >= 0; i--)
+    for (int i = brn - 1; i >= 0; i--)
         cin >> br[i];
-    for (i = brn - 1; i >= 0; i--)
-        mt[i] = br[i];
-    uzupelnienieDoDwoch(mt, brn);
+    uzupelnienieDoDwoch(br);
+
     cout << "\n Liczba bitow mnoznika=";
     cin >> qrn;
-    sc = qrn;
+    qr.resize(qrn);
+    licznik = qrn;
+
     cout << "Mnoznik=";
-    for (i = qrn - 1; i >= 0; i--)
+    for (int i = qrn - 1; i >= 0; i--)
         cin >> qr[i];
-    qn = 0;
-    temp = 0;
-    while (sc != 0) {
-        if ((qn + qr[0]) == 1) {
-            if (temp == 0) {
-                dodaj(ac, mt, qrn);
-                temp = 1;
-            } else if (temp == 1) {
-                dodaj(ac, br, qrn);
-                temp = 0;
-            }
-            przesunWPrawo(ac, qr, qn, qrn);
-        } else if (qn - qr[0] == 0)
-            przesunWPrawo(ac, qr, qn, qrn);
-        sc--;
+
+    while (licznik > 0) {
+        int qBits = (qn << 1) + qr[0];
+
+        if (qBits == 0b01) {
+            dodaj(ac, br);
+        } else if (qBits == 0b10) {
+            uzupelnienieDoDwoch(br);
+            dodaj(ac, br);
+            uzupelnienieDoDwoch(br);
+        }
+
+        przesunWPrawo(ac, qr, qn);
+        licznik--;
     }
+
     cout << "Wynik=";
-    wyswietlWynik(ac, qr, qrn);
+    wyswietlWynik(ac, qr);
 }
