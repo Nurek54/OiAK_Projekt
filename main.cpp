@@ -1,8 +1,10 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
+
 using namespace std;
 
-// Funkcja dodająca dwie liczby binarne
+// Dodaje dwie liczby binarne
 void dodaj(vector<int> &a, const vector<int> &b) {
     int carry = 0;
     for (size_t i = 0; i < a.size(); i++) {
@@ -12,7 +14,7 @@ void dodaj(vector<int> &a, const vector<int> &b) {
     }
 }
 
-// Funkcja dopełnienia do dwóch
+// Dopełnienie do dwóch
 void uzupelnienieDoDwoch(vector<int> &num) {
     vector<int> jeden(num.size(), 0);
     jeden[0] = 1;
@@ -22,7 +24,7 @@ void uzupelnienieDoDwoch(vector<int> &num) {
     dodaj(num, jeden);
 }
 
-// Przesunięcie w prawo
+// Przesunięcie w prawo o jeden bit (dla zwykłego Bootha)
 void przesunWPrawo(vector<int> &ac, vector<int> &qr, int &qn) {
     int temp = ac[0];
     qn = qr[0];
@@ -33,17 +35,7 @@ void przesunWPrawo(vector<int> &ac, vector<int> &qr, int &qn) {
     qr[qr.size() - 1] = temp;
 }
 
-// Wyświetla wynik w formie binarnej
-void wyswietlWynik(const vector<int> &ac, const vector<int> &qr) {
-    for (auto it = ac.rbegin(); it != ac.rend(); ++it)
-        cout << *it;
-    cout << " ";
-    for (auto it = qr.rbegin(); it != qr.rend(); ++it)
-        cout << *it;
-    cout << endl;
-}
-
-// Algorytm Bootha
+// Algorytm Bootha (standardowy)
 void booth(const vector<int> &br, vector<int> &ac, vector<int> &qr, int &qn, int licznik) {
     vector<int> mt = br;
     uzupelnienieDoDwoch(mt);
@@ -60,7 +52,6 @@ void booth(const vector<int> &br, vector<int> &ac, vector<int> &qr, int &qn, int
     }
 }
 
-// Algorytm Booth-Radix 4
 void boothRadix4(vector<int> &br, vector<int> &ac, vector<int> &qr, int &qn, int licznik) {
     while (licznik > 0) {
         int qBits = (qn << 1) + qr[0];
@@ -76,8 +67,8 @@ void boothRadix4(vector<int> &br, vector<int> &ac, vector<int> &qr, int &qn, int
     }
 }
 
-// Funkcja do wczytywania danych
-void wczytajDane(vector<int> &br, vector<int> &qr, vector<int> &ac, int &brn, int &qrn, int &qn, int &licznik) {
+// Wczytaj dane
+void wczytajDane(vector<int> &br, vector<int> &qr, vector<int> &ac, int &brn, int &qrn, int &qn, int &qn_1, int &licznik) {
     cout << "\nPodaj liczbe bitow mnoznika: ";
     cin >> brn;
     br.resize(brn);
@@ -95,27 +86,79 @@ void wczytajDane(vector<int> &br, vector<int> &qr, vector<int> &ac, int &brn, in
         cin >> qr[i];
 
     qn = 0;
-    licznik = qrn;
+    qn_1 = 0;
+    licznik = qrn + (qrn % 2 == 0 ? 0 : 1); // Parzysta liczba iteracji
+}
+
+// Wyświetla wynik
+void wyswietlWynik(const vector<int> &ac, const vector<int> &qr) {
+    for (auto it = ac.rbegin(); it != ac.rend(); ++it)
+        cout << *it;
+    cout << " ";
+    for (auto it = qr.rbegin(); it != qr.rend(); ++it)
+        cout << *it;
+    cout << endl;
+}
+
+// Funkcja modulo multiply
+void moduloMultiply(vector<int> &ac, vector<int> &qr, int n) {
+    long long m = pow(2, n) - 3;
+    long long wynik = 0;
+    long long podstawa = 1;
+
+    // Konwersja binarnego wyniku do liczby
+    for (int i = 0; i < qr.size(); i++) {
+        if (qr[i] == 1) {
+            wynik += podstawa;
+        }
+        podstawa *= 2;
+    }
+
+    // Dodaj AC do wyniku
+    podstawa = pow(2, qr.size());
+    for (int i = 0; i < ac.size(); i++) {
+        if (ac[i] == 1) {
+            wynik += podstawa;
+        }
+        podstawa *= 2;
+    }
+
+    // Wykonaj modulo
+    wynik %= m;
+
+    // Zamień z powrotem na wektor binarny
+    for (int i = 0; i < qr.size(); i++) {
+        qr[i] = wynik % 2;
+        wynik /= 2;
+    }
+    for (int i = 0; i < ac.size(); i++) {
+        ac[i] = wynik % 2;
+        wynik /= 2;
+    }
 }
 
 int main() {
     vector<int> br, qr, ac;
     vector<int> oryginalnyQr, oryginalnyAc;
-    int brn, qrn, qn = 0, wybor, licznik;
+    int brn, qrn, qn = 0, qn_1 = 0, wybor, licznik, n;
     bool kontynuowac = true;
     bool uzyjTychSamychDanych = false;
 
     while (kontynuowac) {
         if (!uzyjTychSamychDanych) {
-            wczytajDane(br, qr, ac, brn, qrn, qn, licznik);
+            wczytajDane(br, qr, ac, brn, qrn, qn, qn_1, licznik);
             oryginalnyQr = qr;
             oryginalnyAc = vector<int>(brn, 0);
         } else {
             qr = oryginalnyQr;
             ac = vector<int>(brn, 0);
             qn = 0;
-            licznik = qrn;
+            qn_1 = 0;
+            licznik = qrn + (qrn % 2 == 0 ? 0 : 1);
         }
+
+        cout << "\nPodaj wartosc n do mnozenia modulo 2^n - 3: ";
+        cin >> n;
 
         cout << "\nWybierz algorytm:\n1 - Zwykly Booth\n2 - Booth-Radix 4\n3 - Zakoncz program\nTwoj wybor: ";
         cin >> wybor;
@@ -123,11 +166,13 @@ int main() {
         switch (wybor) {
             case 1:
                 booth(br, ac, qr, qn, licznik);
+                moduloMultiply(ac, qr, n);
                 cout << "\nWynik: ";
                 wyswietlWynik(ac, qr);
                 break;
             case 2:
                 boothRadix4(br, ac, qr, qn, licznik);
+                moduloMultiply(ac, qr, n);
                 cout << "\nWynik: ";
                 wyswietlWynik(ac, qr);
                 break;
