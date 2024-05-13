@@ -6,16 +6,16 @@ using namespace std;
 
 // Dodaje dwie liczby binarne
 void dodaj(vector<int> &a, const vector<int> &b) {
-    int carry = 0;
+    int przeniesienie = 0;
     for (size_t i = 0; i < a.size(); i++) {
-        int sum = a[i] + b[i] + carry;
-        a[i] = sum % 2;
-        carry = sum / 2;
+        int suma = a[i] + b[i] + przeniesienie;
+        a[i] = suma % 2;
+        przeniesienie = suma / 2;
     }
 }
 
-// Dopełnienie do dwóch
-void uzupelnienieDoDwoch(vector<int> &num) {
+// Dopelnienie do dwoch
+void dopelnienieDoDwoch(vector<int> &num) {
     vector<int> jeden(num.size(), 0);
     jeden[0] = 1;
     for (int &bit : num) {
@@ -24,7 +24,7 @@ void uzupelnienieDoDwoch(vector<int> &num) {
     dodaj(num, jeden);
 }
 
-// Przesunięcie w prawo o jeden bit (dla zwykłego Bootha)
+// Przesuniecie w prawo o jeden bit (dla zwyklego Bootha)
 void przesunWPrawo(vector<int> &ac, vector<int> &qr, int &qn) {
     int temp = ac[0];
     qn = qr[0];
@@ -38,7 +38,7 @@ void przesunWPrawo(vector<int> &ac, vector<int> &qr, int &qn) {
 // Algorytm Bootha (standardowy)
 void booth(const vector<int> &br, vector<int> &ac, vector<int> &qr, int &qn, int licznik) {
     vector<int> mt = br;
-    uzupelnienieDoDwoch(mt);
+    dopelnienieDoDwoch(mt);
 
     while (licznik != 0) {
         int qBits = (qn << 1) + qr[0];
@@ -52,15 +52,16 @@ void booth(const vector<int> &br, vector<int> &ac, vector<int> &qr, int &qn, int
     }
 }
 
+// Algorytm Booth-Radix 4
 void boothRadix4(vector<int> &br, vector<int> &ac, vector<int> &qr, int &qn, int licznik) {
     while (licznik > 0) {
         int qBits = (qn << 1) + qr[0];
         if (qBits == 0b01) {
             dodaj(ac, br);
         } else if (qBits == 0b10) {
-            uzupelnienieDoDwoch(br);
+            dopelnienieDoDwoch(br);
             dodaj(ac, br);
-            uzupelnienieDoDwoch(br);
+            dopelnienieDoDwoch(br);
         }
         przesunWPrawo(ac, qr, qn);
         licznik--;
@@ -76,7 +77,7 @@ void wczytajDane(vector<int> &br, vector<int> &qr, vector<int> &ac, int &brn, in
     cout << "\nWprowadz mnoznik w postaci binarnej: ";
     for (int i = brn - 1; i >= 0; i--)
         cin >> br[i];
-    uzupelnienieDoDwoch(br);
+    dopelnienieDoDwoch(br);
 
     cout << "\nPodaj liczbe bitow mnoznika: ";
     cin >> qrn;
@@ -90,7 +91,7 @@ void wczytajDane(vector<int> &br, vector<int> &qr, vector<int> &ac, int &brn, in
     licznik = qrn + (qrn % 2 == 0 ? 0 : 1); // Parzysta liczba iteracji
 }
 
-// Wyświetla wynik
+// Wyswietla wynik
 void wyswietlWynik(const vector<int> &ac, const vector<int> &qr) {
     for (auto it = ac.rbegin(); it != ac.rend(); ++it)
         cout << *it;
@@ -126,7 +127,7 @@ void moduloMultiply(vector<int> &ac, vector<int> &qr, int n) {
     // Wykonaj modulo
     wynik %= m;
 
-    // Zamień z powrotem na wektor binarny
+    // Zamien z powrotem na wektor binarny
     for (int i = 0; i < qr.size(); i++) {
         qr[i] = wynik % 2;
         wynik /= 2;
