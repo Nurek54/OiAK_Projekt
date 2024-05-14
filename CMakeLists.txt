@@ -3,4 +3,11 @@ project(OiAK)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(OiAK main.cpp)
+add_executable(OiAK main.cpp
+        BoothRadix4.cpp
+        BoothRadix4.h
+        Booth.cpp
+        Booth.h
+        BinaryUtils.cpp
+        BinaryUtils.h
+)
