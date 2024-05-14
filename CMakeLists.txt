@@ -10,4 +10,7 @@ add_executable(OiAK main.cpp
         Booth.h
         BinaryUtils.cpp
         BinaryUtils.h
+        Modulo.cpp
+        Modulo.h
+        Modulo.h
 )

@@ -73,6 +73,12 @@ build CMakeFiles/OiAK.dir/BinaryUtils.cpp.obj: CXX_COMPILER__OiAK_unscanned_Debu
   OBJECT_DIR = CMakeFiles\OiAK.dir
   OBJECT_FILE_DIR = CMakeFiles\OiAK.dir
 
+build CMakeFiles/OiAK.dir/Modulo.cpp.obj: CXX_COMPILER__OiAK_unscanned_Debug C$:/Users/g_sie/CLionProjects/OiAK/Modulo.cpp || cmake_object_order_depends_target_OiAK
+  DEP_FILE = CMakeFiles\OiAK.dir\Modulo.cpp.obj.d
+  FLAGS = -g -std=gnu++23 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\OiAK.dir
+  OBJECT_FILE_DIR = CMakeFiles\OiAK.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target OiAK
@@ -81,7 +87,7 @@ build CMakeFiles/OiAK.dir/BinaryUtils.cpp.obj: CXX_COMPILER__OiAK_unscanned_Debu
 #############################################
 # Link the executable OiAK.exe
 
-build OiAK.exe: CXX_EXECUTABLE_LINKER__OiAK_Debug CMakeFiles/OiAK.dir/main.cpp.obj CMakeFiles/OiAK.dir/BoothRadix4.cpp.obj CMakeFiles/OiAK.dir/Booth.cpp.obj CMakeFiles/OiAK.dir/BinaryUtils.cpp.obj
+build OiAK.exe: CXX_EXECUTABLE_LINKER__OiAK_Debug CMakeFiles/OiAK.dir/main.cpp.obj CMakeFiles/OiAK.dir/BoothRadix4.cpp.obj CMakeFiles/OiAK.dir/Booth.cpp.obj CMakeFiles/OiAK.dir/BinaryUtils.cpp.obj CMakeFiles/OiAK.dir/Modulo.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\OiAK.dir
