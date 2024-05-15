@@ -4,7 +4,7 @@
 class ControlPath {
 public:
     ControlPath();
-    void updateState(bool start, bool eqz, int Q2_1, int Q2, int Q2_0);
+    void updateState(bool start, bool eqz, int Q1, int Q0, int Qm1);
 
     bool ldA, shiftA, clrA, ldQ, shiftQ, clrQ, decr, ld_count, clrff, ldM, clrM, done;
     int ALU_op;

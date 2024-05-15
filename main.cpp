@@ -2,7 +2,7 @@
 #include "DataPath.h"
 #include "ControlPath.h"
 #include "BinaryUtils.h"
-#include "Modulo.h"  // Upewnij się, że klasa Modulo jest zaimportowana
+#include "Modulo.h"
 
 int main() {
     int liczba1, liczba2, n;
@@ -36,10 +36,10 @@ int main() {
     while (!cp.done) {
         cp.updateState(start, dp.checkZero(), dp.Q_1, dp.Q_0, dp.Qm_1);
         dp.update(cp.ALU_op, cp.ldA, cp.shiftA, cp.clrA, cp.ldQ, cp.shiftQ, cp.clrQ, cp.ldM, cp.clrM);
-        start = false; // Upewnij się, że start jest ustawiony tylko raz na początku
+        start = false;
     }
 
-    int radix4Result = BinaryUtils::binaryToDecimal(dp.A) + BinaryUtils::binaryToDecimal(dp.Q);
+    int radix4Result = dp.getResult();
     std::vector<int> radix4ResultBinary = BinaryUtils::toBinary(radix4Result, sizeof(int) * 8);
     std::cout << "\nAlgorytm Booth Radix-4:\n";
     std::cout << "Wynik w binarnym: ";

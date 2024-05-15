@@ -5,7 +5,7 @@ ControlPath::ControlPath() : PS(IDLE), NS(IDLE) {
     ALU_op = 0;
 }
 
-void ControlPath::updateState(bool start, bool eqz, int Q2_1, int Q2, int Q2_0) {
+void ControlPath::updateState(bool start, bool eqz, int Q1, int Q0, int Qm1) {
     switch (PS) {
         case IDLE:
             if (start) NS = LOAD;
@@ -15,11 +15,11 @@ void ControlPath::updateState(bool start, bool eqz, int Q2_1, int Q2, int Q2_0) 
             break;
         case COMP:
             if (eqz) NS = DONE;
-            else if ((Q2_1 == 0 && Q2 == 0 && Q2_0 == 0) || (Q2_1 == 1 && Q2 == 1 && Q2_0 == 1)) NS = SHIFT;
-            else if ((Q2_1 == 0 && Q2 == 0 && Q2_0 == 1) || (Q2_1 == 0 && Q2 == 1 && Q2_0 == 0)) NS = A1;
-            else if ((Q2_1 == 1 && Q2 == 0 && Q2_0 == 1) || (Q2_1 == 1 && Q2 == 1 && Q2_0 == 0)) NS = A2;
-            else if (Q2_1 == 0 && Q2 == 1 && Q2_0 == 1) NS = A3;
-            else if (Q2_1 == 1 && Q2 == 0 && Q2_0 == 0) NS = A4;
+            else if ((Q1 == 0 && Q0 == 0 && Qm1 == 0) || (Q1 == 1 && Q0 == 1 && Qm1 == 1)) NS = SHIFT;
+            else if ((Q1 == 0 && Q0 == 0 && Qm1 == 1) || (Q1 == 0 && Q0 == 1 && Qm1 == 0)) NS = A1;
+            else if ((Q1 == 1 && Q0 == 0 && Qm1 == 1) || (Q1 == 1 && Q0 == 1 && Qm1 == 0)) NS = A2;
+            else if (Q1 == 0 && Q0 == 1 && Qm1 == 1) NS = A3;
+            else if (Q1 == 1 && Q0 == 0 && Qm1 == 0) NS = A4;
             break;
         case A1:
             NS = SHIFT;

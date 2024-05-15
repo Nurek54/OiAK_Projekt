@@ -20,7 +20,7 @@ void DataPath::update(int ALU_op, bool ldA, bool shiftA, bool clrA, bool ldQ, bo
         Q_0 = Q[1];
         Q_1 = Q[2];
         A.pop_back();
-        A.insert(A.begin(), ALU_OUT[bitSize - 1]);
+        A.insert(A.begin(), A.front());
         Q.pop_back();
         Q.insert(Q.begin(), A.back());
     }
@@ -55,4 +55,8 @@ bool DataPath::checkZero() {
         if (bit != 0) return false;
     }
     return true;
+}
+
+int DataPath::getResult() const {
+    return BinaryUtils::binaryToDecimal(A) + BinaryUtils::binaryToDecimal(Q);
 }
