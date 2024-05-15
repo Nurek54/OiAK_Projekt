@@ -72,4 +72,5 @@ int main() {
     std::cout << "\nWynik w dziesietnym: " << radix4ResultModulo << std::endl;
 
     return 0;
+
 }
