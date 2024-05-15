@@ -1,24 +1,26 @@
-#ifndef BOOTHRADIX4_H
-#define BOOTHRADIX4_H
+#ifndef BOOTH_RADIX4_H
+#define BOOTH_RADIX4_H
 
 #include <vector>
 
 class BoothRadix4 {
 public:
-    BoothRadix4(const std::vector<int>& M, const std::vector<int>& Q);
-    std::vector<int> multiply();
-    int binaryToDecimal(const std::vector<int>& binary);
+    BoothRadix4(int M, int Q);
+    int multiply();
 
 private:
-    std::vector<int> M;
-    std::vector<int> Q;
+    std::vector<int> addBinary(const std::vector<int>& a, const std::vector<int>& b);
+    std::vector<int> negateBinary(const std::vector<int>& a);
+    void arithmeticRightShift(std::vector<int>& A, std::vector<int>& Q, int k);
+    int decodeRadix4(int y2i1, int y2i, int y2im1);
+
+    int M;
+    int Q;
+    int n;
+    std::vector<int> M_bin;
+    std::vector<int> Q_bin;
     std::vector<int> A;
     std::vector<int> M_neg;
-    int Q_1;
-
-    std::vector<int> binaryAdd(const std::vector<int>& a, const std::vector<int>& b);
-    void arithmeticRightShift();
-    std::vector<int> twosComplement(const std::vector<int>& binary);
 };
 
-#endif // BOOTHRADIX4_H
+#endif // BOOTH_RADIX4_H

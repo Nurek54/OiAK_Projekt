@@ -13,4 +13,10 @@ add_executable(OiAK main.cpp
         Modulo.cpp
         Modulo.h
         Modulo.h
+        ALU.cpp
+        ALU.h
+        ControlPath.cpp
+        ControlPath.h
+        DataPath.cpp
+        DataPath.h
 )

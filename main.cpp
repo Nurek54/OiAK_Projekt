@@ -1,8 +1,8 @@
 #include <iostream>
-#include "Booth.h"
-#include "BoothRadix4.h"
-#include "Modulo.h"
+#include "DataPath.h"
+#include "ControlPath.h"
 #include "BinaryUtils.h"
+#include "Modulo.h"  // Upewnij się, że klasa Modulo jest zaimportowana
 
 int main() {
     int liczba1, liczba2, n;
@@ -27,42 +27,30 @@ int main() {
     std::cout << "Podaj n dla modulo 2^n - 3: ";
     std::cin >> n;
 
-    // Wynik normalnego Bootha
-    std::cout << "\nAlgorytm Bootha:\n";
-    Booth booth(liczba1, liczba2);
-    int boothResult = booth.multiply();
-    std::vector<int> boothResultBinary = BinaryUtils::toBinary(boothResult, sizeof(int) * 8);
-    std::cout << "Wynik w binarnym: ";
-    for (int bit : boothResultBinary) {
-        std::cout << bit;
-    }
-    std::cout << "\nProdukt: " << boothResult << std::endl;
+    // Booth Radix-4
+    DataPath dp(sizeof(int) * 8);
+    ControlPath cp;
+    dp.setInput(liczba1, liczba2);
 
-    // Wynik normalnego Bootha poddany modulo
-    Modulo modulo(n);
-    int boothResultModulo = modulo.applyModulo(boothResult);
-    std::vector<int> boothResultModuloBinary = BinaryUtils::toBinary(boothResultModulo, sizeof(int) * 8);
-    std::cout << "\nAlgorytm Bootha z modulo 2^" << n << " - 3:\n";
-    std::cout << "Wynik w binarnym: ";
-    for (int bit : boothResultModuloBinary) {
-        std::cout << bit;
+    bool start = true;
+    while (!cp.done) {
+        cp.updateState(start, dp.checkZero(), dp.Q_1, dp.Q_0, dp.Qm_1);
+        dp.update(cp.ALU_op, cp.ldA, cp.shiftA, cp.clrA, cp.ldQ, cp.shiftQ, cp.clrQ, cp.ldM, cp.clrM);
+        start = false; // Upewnij się, że start jest ustawiony tylko raz na początku
     }
-    std::cout << "\nWynik w dziesietnym: " << boothResultModulo << std::endl;
 
-    // Wynik algorytmu Booth Radix-4
+    int radix4Result = BinaryUtils::binaryToDecimal(dp.A) + BinaryUtils::binaryToDecimal(dp.Q);
+    std::vector<int> radix4ResultBinary = BinaryUtils::toBinary(radix4Result, sizeof(int) * 8);
     std::cout << "\nAlgorytm Booth Radix-4:\n";
-    BoothRadix4 boothRadix4(M_bin, Q_bin);
-    std::vector<int> radix4Result = boothRadix4.multiply();
-    int radix4ResultDecimal = boothRadix4.binaryToDecimal(radix4Result);
-    std::vector<int> radix4ResultBinary = BinaryUtils::toBinary(radix4ResultDecimal, sizeof(int) * 8);
     std::cout << "Wynik w binarnym: ";
     for (int bit : radix4ResultBinary) {
         std::cout << bit;
     }
-    std::cout << "\nWynik w dziesietnym: " << radix4ResultDecimal << std::endl;
+    std::cout << "\nWynik w dziesietnym: " << radix4Result << std::endl;
 
     // Wynik algorytmu Booth Radix-4 poddany modulo
-    int radix4ResultModulo = modulo.applyModulo(radix4ResultDecimal);
+    Modulo modulo(n);
+    int radix4ResultModulo = modulo.applyModulo(radix4Result);
     std::vector<int> radix4ResultModuloBinary = BinaryUtils::toBinary(radix4ResultModulo, sizeof(int) * 8);
     std::cout << "\nAlgorytm Booth Radix-4 z modulo 2^" << n << " - 3:\n";
     std::cout << "Wynik w binarnym: ";
@@ -72,5 +60,4 @@ int main() {
     std::cout << "\nWynik w dziesietnym: " << radix4ResultModulo << std::endl;
 
     return 0;
-
 }
