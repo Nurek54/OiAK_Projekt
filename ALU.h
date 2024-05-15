@@ -10,7 +10,6 @@ public:
 private:
     static std::vector<int> add(const std::vector<int>& a, const std::vector<int>& b);
     static std::vector<int> subtract(const std::vector<int>& a, const std::vector<int>& b);
-    static std::vector<int> shiftLeft(const std::vector<int>& a);
     static std::vector<int> shiftLeftTwice(const std::vector<int>& a);
 };
 

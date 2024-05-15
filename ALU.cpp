@@ -9,10 +9,10 @@ std::vector<int> ALU::execute(const std::vector<int>& in1, const std::vector<int
         case 1: // SUBTRACT
             result = subtract(in1, in2);
             break;
-        case 2: // ADD and SHIFT LEFT
+        case 2: // ADD and SHIFT LEFT TWICE
             result = add(in1, shiftLeftTwice(in2));
             break;
-        case 3: // SUBTRACT and SHIFT LEFT
+        case 3: // SUBTRACT and SHIFT LEFT TWICE
             result = subtract(in1, shiftLeftTwice(in2));
             break;
     }
@@ -39,14 +39,6 @@ std::vector<int> ALU::subtract(const std::vector<int>& a, const std::vector<int>
     one.back() = 1;
     neg_b = add(neg_b, one);
     return add(a, neg_b);
-}
-
-std::vector<int> ALU::shiftLeft(const std::vector<int>& a) {
-    std::vector<int> result(a.size(), 0);
-    for (int i = 0; i < a.size() - 1; i++) {
-        result[i] = a[i + 1];
-    }
-    return result;
 }
 
 std::vector<int> ALU::shiftLeftTwice(const std::vector<int>& a) {
