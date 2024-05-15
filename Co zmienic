@@ -1,0 +1,3 @@
+Trzeba naprawić Booth Radix4 dla liczb ujemnych bo cos tam szwankuje, zwykly Booth dziala
+Trzeba pousuwać std::
+Zobaczyć co jeszcze dodać do tego projektu
